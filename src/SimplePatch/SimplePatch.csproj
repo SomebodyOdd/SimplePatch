@@ -7,7 +7,7 @@
     <Company>Omar Muscatello</Company>
     <Description>A simple library for partial entity changes in ASP.NET and ASP.NET Core.</Description>
     <Copyright>Copyright (c) Omar Muscatello 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/SomebodyOdd/SimplePatch/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>Apache-2.0</PackageLicense>
     <PackageReleaseNotes>* Added support for child class patch.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/SomebodyOdd/SimplePatch</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SomebodyOdd/SimplePatch</RepositoryUrl>
