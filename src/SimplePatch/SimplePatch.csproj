@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <Version>3.0.1</Version>
-    <Authors>Omar Muscatello</Authors>
-    <Company>Omar Muscatello</Company>
+    <Version>3.1.0</Version>
+    <Authors>Omar Muscatello, SomebodyOdd</Authors>
+    <Company>Omar Muscatello, SomebodyOdd</Company>
     <Description>A simple library for partial entity changes in ASP.NET and ASP.NET Core.</Description>
-    <Copyright>Copyright (c) Omar Muscatello 2018</Copyright>
+    <Copyright>Copyright (c) Omar Muscatello 2018, SomebodyOdd 2022</Copyright>
     <PackageLicense>Apache-2.0</PackageLicense>
-    <PackageReleaseNotes>* Added support for child class patch.</PackageReleaseNotes>
+    <PackageReleaseNotes>* Added support for transforming maps.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/SomebodyOdd/SimplePatch</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SomebodyOdd/SimplePatch</RepositoryUrl>
     <PackageIconUrl>http://raw.github.com/SomebodyOdd/SimplePatch/master/simplepatch-icon.png</PackageIconUrl>
@@ -16,7 +15,7 @@
     <PackageTags>patch http-patch partial-entity-changes web-api asp-net-web-api entity-framework entity-framework-core asp-net asp-net-core</PackageTags>
     <ApplicationIcon></ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
+    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <FileVersion>3.1.0.0</FileVersion>
   </PropertyGroup>
 </Project>
