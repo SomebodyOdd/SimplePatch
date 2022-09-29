@@ -123,5 +123,80 @@ namespace SimplePatch.Tests.ConfigurationTests
             CreateDelta<Person, string>(x => x.Name, John.BirthDate).Patch(John);
             Assert.AreEqual("datetime:1990-02-01T20:15:10", John.Name);
         }
+
+        [TestMethod]
+        public void TransformFunction()
+        {
+            DeltaConfig.Init(cfg =>
+            {
+                cfg
+
+                /* When the target property type is string and the input is string, then the assigned value will be the reversed input string */
+                .AddMapping((propType, newValue, oldValue) =>
+                {
+                    var result = new MapResult<object>();
+
+                    if (propType == typeof(string) && newValue.GetType() == typeof(string))
+                    {
+                        result.Value = string.Join("", oldValue.ToString().Concat(newValue.ToString().ToCharArray().Reverse()));
+                    }
+                    else
+                    {
+                        result.Skip = true;
+                    }
+
+                    return result;
+                })
+                .AddEntity<Person>()
+                    .Property(x => x.Name)
+                        /* If the input value is string, then the assigned value will be the same string. Overriding global mapping function.*/
+                        .AddMapping((propType, newValue, oldValue) =>
+                        {
+                            if (newValue.GetType() != typeof(string)) return new MapResult<string>().SkipMap();
+                            return new MapResult<string>() { Value = newValue.ToString() + oldValue.ToString() };
+                        })
+                        /* If the input value is int, then the assigned value will be "number:{number}" */
+                        .AddMapping((propType, newValue, oldValue) =>
+                        {
+                            var result = new MapResult<string>();
+
+                            if (newValue.GetType() != typeof(int)) return result.SkipMap();
+
+                            result.Value = $"number:{newValue}:{oldValue}";
+
+                            return result;
+                        })
+
+                        /* If the input value is DateTime, then the assigned value will be "datetime:{datetime}".
+                         * This behavior could be accomplished using only the previous mapping function. They are separeted
+                         * functions to test mapping functions order execution*/
+                        .AddMapping((propType, newValue, oldValue) =>
+                        {
+                            var result = new MapResult<string>();
+
+                            if (newValue.GetType() != typeof(DateTime)) return result.SkipMap();
+
+                            result.Value = $"datetime:{(DateTime)newValue:s}:{oldValue}";
+
+                            return result;
+                        });
+            });
+
+            // Global mapping function executed here
+            CreateDelta<Person, string>(x => x.Surname, "Rossi").Patch(John);
+            Assert.AreEqual("DoeissoR", John.Surname);
+
+            // First property mapping function executed here
+            CreateDelta<Person, string>(x => x.Name, "Mario").Patch(John);
+            Assert.AreEqual("MarioJohn", John.Name);
+
+            // Second property mapping function executed here
+            CreateDelta<Person, string>(x => x.Name, 15).Patch(John);
+            Assert.AreEqual("number:15:MarioJohn", John.Name);
+
+            // Third property mapping function executed here
+            CreateDelta<Person, string>(x => x.Name, John.BirthDate.AddDays(1)).Patch(John);
+            Assert.AreEqual("datetime:1990-02-02T20:15:10:number:15:MarioJohn", John.Name);
+        }
     }
 }
