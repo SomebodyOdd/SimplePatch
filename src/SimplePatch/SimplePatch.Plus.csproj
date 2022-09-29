@@ -4,9 +4,12 @@
     <Version>3.1.0</Version>
     <Authors>Omar Muscatello, SomebodyOdd</Authors>
     <Company>Omar Muscatello, SomebodyOdd</Company>
-    <Description>A simple library for partial entity changes in ASP.NET and ASP.NET Core.</Description>
+    <Description>
+		A simple library for partial entity changes in ASP.NET and ASP.NET Core.
+		This is a fork, that adds a transform feature. See https://github.com/omaxel/SimplePatch for a upstream repo.
+	</Description>
     <Copyright>Copyright (c) Omar Muscatello 2018, SomebodyOdd 2022</Copyright>
-    <PackageLicense>Apache-2.0</PackageLicense>
+	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReleaseNotes>* Added support for transforming maps.</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/SomebodyOdd/SimplePatch</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SomebodyOdd/SimplePatch</RepositoryUrl>

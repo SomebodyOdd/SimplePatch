@@ -2,7 +2,7 @@
 <p></p>
 
 
-[![NuGet](https://img.shields.io/nuget/v/SimplePatch.svg)](https://www.nuget.org/packages/SimplePatch/) [![GitHub license](https://img.shields.io/github/license/OmarMuscatello/SimplePatch.svg)](LICENSE)
+[![NuGet](https://img.shields.io/nuget/v/SimplePatch.Plus.svg)](https://www.nuget.org/packages/SimplePatch.Plus/) [![GitHub license](https://img.shields.io/github/license/SomebodyOdd/SimplePatch.svg)](LICENSE)
 
 A simple library for partial entity changes in ASP.NET and ASP.NET Core.
 
