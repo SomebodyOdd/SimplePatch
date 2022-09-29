@@ -47,10 +47,10 @@ namespace SimplePatch
                 deltaInfo.IgnoreNullValue = true;
             }
 
-            internal void AddMapping(MapDelegate<TProp> mapFunction)
+            internal void AddMapping(TransformDelegate<TProp> mapFunction)
             {
-                if (deltaInfo.MapFunctions == null) deltaInfo.MapFunctions = new List<MapDelegate<object>>();
-                deltaInfo.MapFunctions.Add((propertyType, newValue) => (MapResult<object>)mapFunction(propertyType, newValue));
+                if (deltaInfo.MapFunctions == null) deltaInfo.MapFunctions = new List<TransformDelegate<object>>();
+                deltaInfo.MapFunctions.Add((propertyType, newValue, oldValue) => (MapResult<object>)mapFunction(propertyType, newValue, oldValue));
             }
         }
 

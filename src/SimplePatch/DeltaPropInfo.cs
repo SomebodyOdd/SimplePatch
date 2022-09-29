@@ -11,7 +11,7 @@ namespace SimplePatch
 
         internal string Name { get => PropertyInfo.Name; }
 
-        internal List<MapDelegate<object>> MapFunctions { get; set; }
+        internal List<TransformDelegate<object>> MapFunctions { get; set; }
 
         internal bool Excluded { get; set; }
 

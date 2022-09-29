@@ -198,6 +198,7 @@ namespace SimplePatch
                 {
                     var truePropertyType = TypeHelper.GetTrueType(propertyInfo.PropertyType);
                     var newPropertyValue = this[propertyInfo.Name];
+                    var oldPropertyValue = prop.PropertyInfo.GetValue(entity);
 
                     //Check for null value before getting type of new value
                     if (newPropertyValue == null)
@@ -207,7 +208,7 @@ namespace SimplePatch
                         //Check if destination property allows null value
                         if (TypeHelper.IsNullable(propertyInfo.PropertyType))
                         {
-                            var valueFromMappingsForNull = GetValueFromAllMappings(typeof(TEntity), prop, newPropertyValue);
+                            var valueFromMappingsForNull = GetValueFromAllMappings(typeof(TEntity), prop, newPropertyValue, oldPropertyValue);
 
                             if (!valueFromMappingsForNull.Skip)
                             {
@@ -225,7 +226,7 @@ namespace SimplePatch
                         }
                     }
 
-                    var valueFromMappings = GetValueFromAllMappings(typeof(TEntity), prop, newPropertyValue);
+                    var valueFromMappings = GetValueFromAllMappings(typeof(TEntity), prop, newPropertyValue, oldPropertyValue);
 
                     if (!valueFromMappings.Skip)
                     {
@@ -268,12 +269,12 @@ namespace SimplePatch
         /// <param name="deltaPropInfo">Informations about the property</param>
         /// <param name="newPropertyValue">New value which should be processed before assigning it to the processed property</param>
         /// <returns></returns>
-        private MapResult<object> GetValueFromAllMappings(Type entityType, DeltaPropInfo deltaPropInfo, object newPropertyValue)
+        private MapResult<object> GetValueFromAllMappings(Type entityType, DeltaPropInfo deltaPropInfo, object newPropertyValue, object oldPropertyValue)
         {
-            var valueFromPropertyMappings = GetValueFromPropertyMappings(deltaPropInfo, newPropertyValue);
+            var valueFromPropertyMappings = GetValueFromPropertyMappings(deltaPropInfo, newPropertyValue, oldPropertyValue);
             if (!valueFromPropertyMappings.Skip) return valueFromPropertyMappings;
 
-            return GetValueFromGlobalMappings(deltaPropInfo.PropertyInfo.PropertyType, newPropertyValue);
+            return GetValueFromGlobalMappings(deltaPropInfo.PropertyInfo.PropertyType, newPropertyValue, oldPropertyValue);
         }
 
         /// <summary>
@@ -282,15 +283,15 @@ namespace SimplePatch
         /// <param name="propertyType">Type of the property to be processed</param>
         /// <param name="newPropertyValue">New value which should be processed before assigning it to the processed property</param>
         /// <returns></returns>
-        private MapResult<object> GetValueFromGlobalMappings(Type propertyType, object newPropertyValue)
+        private MapResult<object> GetValueFromGlobalMappings(Type propertyType, object newPropertyValue, object oldPropertyValue)
         {
-            var mappings = DeltaConfig.GlobalMappings;
+            var transforms = DeltaConfig.GlobalMappings;
 
-            if (mappings != null)
+            if (transforms != null)
             {
-                foreach (var mapping in mappings)
+                foreach (var transform in transforms)
                 {
-                    var mapResult = mapping(propertyType, newPropertyValue);
+                    var mapResult = transform(propertyType, newPropertyValue, oldPropertyValue);
 
                     if (mapResult.Skip) continue;
 
@@ -309,15 +310,15 @@ namespace SimplePatch
         /// <param name="propertyName">Name of the property</param>
         /// <param name="newPropertyValue">New value which should be processed before assigning it to the processed property</param>
         /// <returns></returns>
-        private MapResult<object> GetValueFromPropertyMappings(DeltaPropInfo deltaPropInfo, object newPropertyValue)
+        private MapResult<object> GetValueFromPropertyMappings(DeltaPropInfo deltaPropInfo, object newPropertyValue, object oldPropertyValue)
         {
-            var mappings = deltaPropInfo.MapFunctions;
+            var transforms = deltaPropInfo.MapFunctions;
 
-            if (mappings != null)
+            if (transforms != null)
             {
-                foreach (var mapping in mappings)
+                foreach (var transform in transforms)
                 {
-                    var mapResult = mapping(deltaPropInfo.PropertyInfo.PropertyType, newPropertyValue);
+                    var mapResult = transform(deltaPropInfo.PropertyInfo.PropertyType, newPropertyValue, oldPropertyValue);
 
                     if (mapResult.Skip) continue;
 

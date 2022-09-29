@@ -13,7 +13,7 @@ namespace SimplePatch
         /// <summary>
         /// List of the global mapping function
         /// </summary>
-        internal static List<MapDelegate<object>> GlobalMappings;
+        internal static List<TransformDelegate<object>> GlobalMappings;
 
         public static void Init(Action<Config> config)
         {
@@ -49,6 +49,19 @@ namespace SimplePatch
                 }
 
                 /// <summary>
+                /// Adds a transform function for the specified property of the specified entity.
+                /// </summary>
+                /// <typeparam name="TProp">Type of the property</typeparam>
+                /// <param name="property">Expression which indicates the property</param>
+                /// <param name="transformFunc">Transform function used to evaluate the value to be assigned to the property</param>
+                /// <returns></returns>
+                public PropertyConfig<TEntity, TProp> AddMapping(TransformDelegate<TProp> transformFunc)
+                {
+                    deltaCachePropertyEditor.AddMapping(transformFunc);
+                    return this;
+                }
+
+                /// <summary>
                 /// Adds a mapping function for the specified property of the specified entity.
                 /// </summary>
                 /// <typeparam name="TProp">Type of the property</typeparam>
@@ -57,7 +70,7 @@ namespace SimplePatch
                 /// <returns></returns>
                 public PropertyConfig<TEntity, TProp> AddMapping(MapDelegate<TProp> mapFunction)
                 {
-                    deltaCachePropertyEditor.AddMapping(mapFunction);
+                    deltaCachePropertyEditor.AddMapping((type, old, _) => mapFunction(type, old));
                     return this;
                 }
 
@@ -107,15 +120,28 @@ namespace SimplePatch
             }
 
             /// <summary>
-            /// Adds a global mapping function which will be executed for every property of the processed entities.
-            /// The result of the <paramref name="mappingFunc"/> will be used to evaluate the value to be assigned to the processed property.
+            /// Adds a global transform function which will be executed for every property of the processed entities.
+            /// The result of the <paramref name="transformFunc"/> will be used to evaluate the value to be assigned to the processed property.
             /// </summary>
-            /// <param name="mappingFunc">The mapping function</param>
+            /// <param name="transformFunc">The mapping function</param>
+            /// <returns></returns>
+            public Config AddMapping(TransformDelegate<object> transformFunc)
+            {
+                if (GlobalMappings == null) GlobalMappings = new List<TransformDelegate<object>>();
+                GlobalMappings.Add(transformFunc);
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a global mapping function which will be executed for every property of the processed entities.
+            /// The result of the <paramref name="transformFunc"/> will be used to evaluate the value to be assigned to the processed property.
+            /// </summary>
+            /// <param name="transformFunc">The mapping function</param>
             /// <returns></returns>
             public Config AddMapping(MapDelegate<object> mappingFunc)
             {
-                if (GlobalMappings == null) GlobalMappings = new List<MapDelegate<object>>();
-                GlobalMappings.Add(mappingFunc);
+                if(GlobalMappings == null) GlobalMappings = new List<TransformDelegate<object>>();
+                GlobalMappings.Add((type, old, _) => mappingFunc(type, old));
                 return this;
             }
         }
